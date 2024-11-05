@@ -1,0 +1,44 @@
+<aside class="w-64 bg-gray-800 text-white flex flex-col h-full shadow-lg">
+  <div class="p-3 text-2xl text-end border-b border-orange-400">
+    <img width="180" height="50" priority ngSrc="assets/images/logo-light.svg" alt="#" />
+  </div>
+  <div class="flex-grow">
+    <ul class="flex flex-col p-2 gap-2">
+      <ng-container *ngFor="let menu of mainMenuList">
+        <li
+          (click)="toggleMenu(menu.title)"
+          [routerLink]="menu.children ? undefined : menu.link" routerLinkActive="{{!menu.children?.length ? 'bg-orange-600 rounded-md' : ''}}"
+          class="p-3   cursor-pointer flex items-center justify-between"
+          matRipple>
+          <div class="flex items-center">
+            <app-ui-svg-icon [path]="getHref(menu.icon)" svgClass="w-6 h-6 text-white mr-2"></app-ui-svg-icon>
+            <span class="ml-3 text-md ">{{ menu.title }}</span>
+          </div>
+
+          <ng-container *ngIf="menu.children?.length">
+            <svg
+              [ngClass]="{ 'rotate-180': expandedMenu === menu.title }"
+              class="w-5 h-5 transition-transform duration-300"
+              fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd"
+                    d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                    clip-rule="evenodd" />
+            </svg>
+          </ng-container>
+        </li>
+        <ul
+          [@slideToggle]="expandedMenu === menu.title ? 'open' : 'closed'"
+          class="ml-4 pl-4 border-l border-gray-600">
+          <li *ngFor="let child of menu.children"
+              [routerLink]="child.link" routerLinkActive="bg-orange-600 py-2 rounded-md"
+              class="py-3 px-2 cursor-pointer" matRipple>
+            <a class="flex items-center">
+              <app-ui-svg-icon [path]="getHref(child.icon)" svgClass="w-5 h-5 text-white mr-2"></app-ui-svg-icon>
+              <span class="ml-2 text-md">{{ child.title }}</span>
+            </a>
+          </li>
+        </ul>
+      </ng-container>
+    </ul>
+  </div>
+</aside>

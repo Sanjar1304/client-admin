@@ -1,0 +1,14 @@
+<div>
+  <div class="py-3 text-end">
+    <button routerLink="/cards/create" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600">
+      Добавить
+    </button>
+  </div>
+  <app-product-display
+    (productId)="openProductDeleteDialog($event)"
+    type="card"
+    [loading]="isLoading()"
+    [items]="products()">
+
+  </app-product-display>
+</div>

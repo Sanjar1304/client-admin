@@ -1,0 +1,32 @@
+
+<main
+  [class.flex]="isAuth()"
+  class="w-screen h-screen flex"
+>
+  <ng-container *ngIf="isAuth()">
+    <app-sidebar></app-sidebar>
+  </ng-container>
+
+  <div class="flex-1 h-full flex flex-col">
+    <ng-container *ngIf="isAuth()">
+      <app-header></app-header>
+    </ng-container>
+
+    <div
+      class="flex-1 overflow-auto"
+      [ngClass]="isAuth()? 'p-4' : 'p-0'"
+      [ngStyle]="{
+        'background': isAuth() ? '#F4F4F4' : 'transparent'
+      }"
+    >
+      <router-outlet [@routeAnimations]="routeAnimationData"></router-outlet>
+    </div>
+  </div>
+</main>
+
+@if (spinnerState$$ | async) {
+  <div class="fixed top-0 left-0 w-full h-full flex justify-center items-center z-[1001]" style="background: rgb(255 255 255 / 76%);">
+    <app-spinner></app-spinner>
+  </div>
+}
+<ngx-sonner-toaster richColors closeButton position="top-right" />

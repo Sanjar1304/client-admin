@@ -1,0 +1,88 @@
+<div *ngIf="loading; else content" class="space-y-4">
+  <div class="p-6 bg-gray-100 rounded-lg flex animate-pulse">
+    <div class="w-1/3">
+      <div class="bg-gray-300 h-64 rounded-md"></div>
+    </div>
+    <div class="w-full pl-6 space-y-4">
+      <div class="h-8 bg-gray-300 rounded-md w-3/4"></div>
+      <div class="h-6 bg-gray-300 rounded-md w-1/2"></div>
+      <div class="space-y-2">
+        <div class="h-6 bg-gray-300 rounded-md w-5/6"></div>
+        <div class="h-6 bg-gray-300 rounded-md w-4/6"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #content>
+  <div *ngIf="items && items.length > 0; else noContent">
+    <div *ngFor="let product of items" class="p-6 text-black bg-white rounded-lg mb-4 flex">
+      <div class="w-1/3">
+        <div *ngFor="let advantage of product.productAdvantages">
+          <img
+            [src]="advantage.imageUrl"
+            alt="Product Advantage"
+            class="w-full h-64 object-cover rounded-md"
+          />
+        </div>
+      </div>
+      <div class="w-full pl-6">
+        <h2 class="text-2xl font-bold mb-4">{{ product.name }}</h2>
+        <p class="text-lg">
+          {{ product.productType }} ({{ product.productUserType }})
+        </p>
+        <div *ngFor="let chunk of product.infoChunks" class="mb-6">
+          <h4 class="text-lg font-semibold">{{ chunk.title }}</h4>
+          <p>{{ chunk.content }}</p>
+        </div>
+        {{ product.currency }}
+      </div>
+      <div class="flex justify-center">
+        <app-ui-svg-icon
+          mat-button
+          [matMenuTriggerFor]="menu"
+          class="w-11 h-11 flex items-center justify-center text-center cursor-pointer"
+          path="./assets/icons/btn-icons.svg#setting-2"
+          svgClass="w-8 h-8"
+        ></app-ui-svg-icon>
+
+        <mat-menu #menu="matMenu" xPosition="before" class="menu-actions">
+          <div
+            routerLink="{{ '/' + type + '/update' }}"
+            [queryParams]="{ id: product.id }"
+            mat-ripple
+            class="flex items-center gap-x-2 py-3 px-3 cursor-pointer"
+          >
+            <app-ui-svg-icon
+              path="./assets/icons/btn-icons.svg#edit"
+              svgClass="w-6 h-6"
+            ></app-ui-svg-icon>
+            <div class="text-xs leading-normal text-secondary">Редактировать</div>
+          </div>
+          <div
+            (click)="productId.emit(product.id)"
+            mat-ripple
+            class="flex items-center gap-x-2 py-3 px-3 cursor-pointer"
+          >
+            <app-ui-svg-icon
+              path="./assets/icons/btn-icons.svg#trash"
+              svgClass="w-6 h-6"
+            ></app-ui-svg-icon>
+            <div class="text-xs leading-normal text-secondary">Удалить</div>
+          </div>
+        </mat-menu>
+      </div>
+    </div>
+  </div>
+
+  <ng-template #noContent>
+    <div class="flex flex-col items-center">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mb-2 text-gray-400" fill="none" viewBox="0 0 24 24"
+           stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M9 17v2a2 2 0 002 2h2a2 2 0 002-2v-2m-6 0h6m-8-4h10l1-9H5l1 9z"/>
+      </svg>
+      <span>Пусто</span>
+    </div>
+  </ng-template>
+</ng-template>

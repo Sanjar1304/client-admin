@@ -1,0 +1,128 @@
+<div class="login-page z-10 overflow-hidden">
+  <div class="login-content_logo">
+    <img width="298" height="90" priority ngSrc="assets/images/logo-light.svg" alt="#"/>
+    <div class="login-content__bottom">Добро пожаловать в mybank Admin</div>
+  </div>
+  <div class="login-content__bottom_small z-10">
+    Вся безопасность полностью реализована и гарантирована «mybank».
+  </div>
+  <img class="absolute z-0 right-0 bottom-0 object-cover h-[60vh] w-auto"
+       ngSrc="assets/images/bg-login-icon.png" alt="" height="657" width="502" priority>
+</div>
+<div class="login-content">
+  <div class="login-content_form">
+    <div>
+      <form (ngSubmit)="userCheck()"  *ngIf="phoneNumberForm" [formGroup]="formPhoneNumber"
+            style="position: relative; height: 100%">
+          <div
+            style="
+                  font-size: 48px;
+                  /*color: #264796;*/
+                  margin-bottom: 24px;
+                  "
+          >
+            Войти
+          </div>
+          <div style="
+                  font-size: 16px;
+                  /*color: #264796;*/
+                  margin-bottom: 36px">
+            Для полноценного использования сайта вам необходимо войти в свой профиль
+          </div>
+          <label>Номер телефона</label>
+          <mat-form-field class=" w-full" appearance="outline">
+            <input
+              [showMaskTyped]="true"
+              placeHolderCharacter=" "
+              prefix="+"
+              mask=" (000) 00 000 00 00"
+              [required]="true"
+              formControlName="username" matInput
+            />
+          </mat-form-field>
+
+        <div style="margin-top: 24px">
+          <button
+            class="border-0"
+            type="submit"
+            style="display: flex;justify-content: center;align-items: center;background: #FF553D;width: 100%;height: 46px;cursor: pointer;border-radius: 5px!important;">
+            <span style="color: #FFFFFF;font-size: 14px">Далее</span></button>
+        </div>
+      </form>
+      <form (ngSubmit)="userVerify()"  *ngIf="isConfirm" [formGroup]="formSmsCode"
+            style="position: relative; height: 100%">
+        <div>
+          <div
+            style="
+                  font-size: 32px;
+                  margin-bottom: 20px;
+                "
+          >
+            Код подтверждения
+          </div>
+          <div style="
+                  font-size: 16px;
+                  margin-bottom: 36px">
+            отправлено смс-сообщение с кодом подтверждения. Введите код и нажмите «Далее»
+          </div>
+          <h4 class="text-start mt-3 " style="font-weight: 500">{{message}}</h4>
+          <mat-form-field class="w-full" appearance="outline">
+            <mat-label>Код</mat-label>
+            <input
+              [required]="true"
+              formControlName="code" style="font-size: 16px" matInput #confirmCode/>
+          </mat-form-field>
+        </div>
+        <div style="margin-top: 24px">
+          <button
+            class="border-0"
+            type="submit"
+            style="display: flex;justify-content: center;align-items: center;background: #FF553D;width: 100%;height: 46px;border-radius: 6px;cursor: pointer;border-radius: 12px!important;">
+            <span style="color: #FFFFFF;font-size: 14px">Далее</span></button>
+        </div>
+      </form>
+      <form (ngSubmit)="loginUser()"  *ngIf="isLogin" [formGroup]="loginForm"
+            style="position: relative; height: 100%">
+        <div>
+          <div
+            style="
+                  font-size: 32px;
+                  margin-bottom: 22px;
+                "
+          >
+            Пароль от аккаунта
+          </div>
+          <div style="
+                  font-size: 16px;
+                  /*color: #264796;*/
+                  margin-bottom: 36px">
+            Для входа в админку вам необходимо ввести свой пароль
+          </div>
+          <label>Пароль</label>
+          <mat-form-field class="w-full" appearance="outline">
+            <input
+              [type]="isPasswordShown ? 'text' : 'password'"
+              [required]="true"
+              style="font-size: 16px"
+              placeholder="Введите пароль"
+              formControlName="password" matInput
+              #passwordInput/>
+            <app-ui-svg-icon (click)="isPasswordShown = !isPasswordShown"
+                             path="./assets/icons/inputs-icons.svg#eye{{isPasswordShown ? '-slash' : ''}}"
+                             svgClass="absolute cursor-pointer right-2 top-6 -translate-y-1/2 w-6 h-6"></app-ui-svg-icon>
+          </mat-form-field>
+        </div>
+        <div style="margin-top: 24px">
+          <button
+            class="border-0"
+            type="submit"
+            style="display: flex;justify-content: center;align-items: center;background: #FF553D;width: 100%;height: 46px;border-radius: 6px;cursor: pointer;margin-bottom: 70px;border-radius: 12px!important;">
+            <span style="color: #FFFFFF;font-size: 14px">Войти</span></button>
+          <div style="display: flex;justify-content: center">
+            <mat-checkbox color="primary">Запомнить меня на сутки</mat-checkbox>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

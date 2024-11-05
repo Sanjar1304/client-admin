@@ -1,0 +1,87 @@
+<div class="bg-white px-4 py-4 rounded">
+  <form [formGroup]="reportForm" (ngSubmit)="onSubmit()" class="flex flex-col">
+    <div class="flex gap-x-1 mb-2">
+      <span matTooltip="Назад" matTooltipPosition="above" routerLink="/reports/all" mat-ripple class="text-white bg-blue-500 rounded-full px-1 py-2 flex items-center h-full cursor-pointer">
+        <mat-icon class="ms-2">arrow_back_ios</mat-icon>
+      </span>
+
+      <button type="submit" class="rounded-full px-8" [disabled]="reportForm.invalid" [ngClass]="{'bg-blue-500 text-white': reportForm.valid, 'bg-blue-600 text-gray-300 cursor-not-allowed': reportForm.invalid}">
+        Сохранить
+      </button>
+    </div>
+
+    <mat-tab-group>
+      <mat-tab label="UZB">
+        <div [formGroup]="getFormGroupAtTitle(0)" class="mt-4">
+          <mat-form-field appearance="outline" class="w-full">
+            <mat-label>Заголовок (УЗБ)</mat-label>
+            <input matInput formControlName="text" placeholder="УЗБ заголовок" />
+            <mat-error *ngIf="title.at(0).get('text')?.invalid">Заголовок обязателен</mat-error>
+          </mat-form-field>
+        </div>
+        <div [formGroup]="getFormGroupAtDescription(0)">
+          <mat-form-field appearance="outline" class="w-full">
+            <mat-label>Описание (УЗБ)</mat-label>
+            <textarea matInput formControlName="text" placeholder="УЗБ описание"></textarea>
+            <mat-error *ngIf="description.at(0).get('text')?.invalid">Описание обязательно</mat-error>
+          </mat-form-field>
+        </div>
+      </mat-tab>
+
+      <mat-tab label="RUS">
+        <div [formGroup]="getFormGroupAtTitle(1)" class="mt-4">
+          <mat-form-field appearance="outline" class="w-full">
+            <mat-label>Заголовок (РУС)</mat-label>
+            <input matInput formControlName="text" placeholder="РУС заголовок" />
+            <mat-error *ngIf="title.at(1).get('text')?.invalid">Заголовок обязателен</mat-error>
+          </mat-form-field>
+        </div>
+        <div [formGroup]="getFormGroupAtDescription(1)">
+          <mat-form-field appearance="outline" class="w-full">
+            <mat-label>Описание (РУС)</mat-label>
+            <textarea matInput formControlName="text" placeholder="РУС описание"></textarea>
+            <mat-error *ngIf="description.at(1).get('text')?.invalid">Описание обязательно</mat-error>
+          </mat-form-field>
+        </div>
+      </mat-tab>
+
+      <mat-tab label="ENG">
+        <div [formGroup]="getFormGroupAtTitle(2)" class="mt-4">
+          <mat-form-field appearance="outline" class="w-full">
+            <mat-label>Заголовок (ENG)</mat-label>
+            <input matInput formControlName="text" placeholder="ENG title" />
+            <mat-error *ngIf="title.at(2).get('text')?.invalid">Заголовок обязателен</mat-error>
+          </mat-form-field>
+        </div>
+        <div [formGroup]="getFormGroupAtDescription(2)">
+          <mat-form-field appearance="outline" class="w-full">
+            <mat-label>Описание (ENG)</mat-label>
+            <textarea matInput formControlName="text" placeholder="ENG описание"></textarea>
+            <mat-error *ngIf="description.at(2).get('text')?.invalid">Описание обязательно</mat-error>
+          </mat-form-field>
+        </div>
+      </mat-tab>
+    </mat-tab-group>
+
+    <div class="flex justify-between items-center gap-x-4">
+      <mat-form-field appearance="outline" class="w-full ">
+        <mat-label>Дата публикации</mat-label>
+        <input matInput type="date" formControlName="publishedDate" [required]="true" />
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="w-full ">
+        <mat-label>Дата окончания</mat-label>
+        <input matInput type="date" formControlName="endDate" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>Тема</mat-label>
+        <mat-select placeholder="выберите тему" formControlName="topicId">
+          <mat-option *ngFor="let topic of topics()" [value]="topic.id">{{topic.name}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <mat-checkbox formControlName="publishOnDate">Опубликовать в дату</mat-checkbox>
+    <mat-checkbox formControlName="hideOnEndDate">Скрыть в дату окончания</mat-checkbox>
+  </form>
+</div>

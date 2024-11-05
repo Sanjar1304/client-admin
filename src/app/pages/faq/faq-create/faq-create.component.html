@@ -1,0 +1,72 @@
+<div class="bg-white px-4 py-4 h-full rounded">
+
+  <form [formGroup]="faqCreateForm" (ngSubmit)="onSubmit()">
+    <div class="flex  gap-x-1 mb-4">
+       <span matTooltip="Назад" matTooltipPosition="above" routerLink="/faq" mat-ripple
+             class="text-white bg-blue-500 rounded-full px-1 py-2 flex items-center h-full cursor-pointer ">
+         <mat-icon class="ms-2">arrow_back_ios</mat-icon>
+       </span>
+
+      <button type="submit" class="rounded-full  px-8" [disabled]="faqCreateForm.invalid"
+              [ngClass]="{'bg-blue-500 text-white':faqCreateForm.valid, 'bg-blue-600 text-gray-300 cursor-not-allowed':faqCreateForm.invalid}">
+        Сохранить
+      </button>
+<!--      <span matTooltip="Обновить" matTooltipPosition="above" (click)="faqCreateForm.reset()" mat-ripple-->
+<!--            class="text-white bg-blue-500 rounded-full px-2 py-2 flex items-center h-full cursor-pointer">-->
+<!--         <mat-icon>refresh</mat-icon>-->
+<!--       </span>-->
+    </div>
+
+    <div class="flex justify-between items-center gap-x-4">
+      <mat-form-field class="w-full" appearance="outline">
+        <mat-label>Тип FAQ</mat-label>
+        <mat-select (selectionChange)="getType($event)" placeholder="выберите тип" formControlName="faqProductType">
+          <mat-option *ngFor="let type of faqTypes()" [value]="type">{{ type }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field class="w-full" appearance="outline">
+        <mat-select formControlName="productId" placeholder="выберите продукт">
+          <mat-option *ngFor="let product of products()" [value]="product.id">{{ product }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <mat-tab-group class="w-full">
+      <mat-tab formArrayName="question" *ngFor="let group of questionArray.controls; let i = index"
+               [label]="(group)?.get('lang')?.value">
+        <div class="mt-4" [formGroupName]="i">
+          <mat-form-field appearance="outline" class="w-full">
+            <mat-label>Вопрос ({{ (group)?.get('lang')?.value }})</mat-label>
+            <textarea
+              matInput
+              [formControlName]="'text'"
+              [placeholder]="'Введите вопрос на ' + (group)?.get('lang')?.value"
+            ></textarea>
+            <mat-error *ngIf="(group)?.get('text')?.invalid">
+              Поле обязательно
+            </mat-error>
+          </mat-form-field>
+        </div>
+      </mat-tab>
+    </mat-tab-group>
+    <mat-tab-group class="w-full">
+      <mat-tab formArrayName="answer" *ngFor="let group of answerArray.controls; let i = index"
+               [label]="(group)?.get('lang')?.value">
+        <div class="mt-4" [formGroupName]="i">
+          <mat-form-field appearance="outline" class="w-full">
+            <mat-label>Ответ ({{ (group)?.get('lang')?.value }})</mat-label>
+            <textarea
+              matInput
+              [formControlName]="'text'"
+              [placeholder]="'Введите ответ на ' + (group)?.get('lang')?.value"
+            ></textarea>
+            <mat-error *ngIf="(group)?.get('text')?.invalid">
+              Поле обязательно
+            </mat-error>
+          </mat-form-field>
+        </div>
+      </mat-tab>
+    </mat-tab-group>
+  </form>
+</div>

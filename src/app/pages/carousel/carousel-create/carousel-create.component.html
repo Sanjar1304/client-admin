@@ -1,0 +1,63 @@
+<div class="bg-white px-4 py-4 rounded h-full">
+  <form [formGroup]="carouselCreateForm" (ngSubmit)="onSubmit()">
+    <div class="flex  gap-x-1 mb-5">
+       <span matTooltip="Назад" matTooltipPosition="above" routerLink="/carousel" mat-ripple
+             class="text-white bg-blue-500 rounded-full px-1 py-2 flex items-center h-full cursor-pointer ">
+         <mat-icon class="ms-2">arrow_back_ios</mat-icon>
+       </span>
+
+      <button type="submit" class="rounded-full  px-8" [disabled]="carouselCreateForm.invalid"
+              [ngClass]="{'bg-blue-500 text-white':carouselCreateForm.valid, 'bg-blue-600 text-gray-300 cursor-not-allowed':carouselCreateForm.invalid}">
+        Сохранить
+      </button>
+<!--      <span matTooltip="Обновить" matTooltipPosition="above" (click)="carouselCreateForm.reset()" mat-ripple-->
+<!--            class="text-white bg-blue-500 rounded-full px-2 py-2 flex items-center h-full cursor-pointer">-->
+<!--         <mat-icon>refresh</mat-icon>-->
+<!--       </span>-->
+    </div>
+    <div class="flex justify-between items-center space-x-4">
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>Баннеры</mat-label>
+        <mat-select (selectionChange)="fetchBannerType($event)" formControlName="bannerId" placeholder="выберите баннер">
+          <mat-option [value]="banner.id" *ngFor="let banner of banners()">
+            <div class="flex justify-between items-center w-full p-2">
+              <div class="flex-shrink-0">
+                <img
+                  [ngSrc]="banner.imageUrl"
+                  height="48"
+                  width="48"
+                  class="rounded-md border border-gray-300"
+                  alt="{{ banner.title }}"
+                />
+              </div>
+              <span class="ml-4 text-base font-medium">{{ banner.title }}</span>
+            </div>
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>Тип карусели</mat-label>
+        <mat-select (selectionChange)="fetchCarouselType($event)" formControlName="carouselType" placeholder="выберите тип каруселя">
+          <mat-option [value]="type" *ngFor="let type of carouselType()">
+            {{ type }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+    </div>
+    <div class="flex justify-between items-center space-x-4">
+      <mat-form-field class="w-full" appearance="outline">
+        <mat-label>Порядковый номер</mat-label>
+        <input formControlName="orderNum" matInput placeholder="введите порядковый номер"/>
+      </mat-form-field>
+      <mat-form-field class="w-full" appearance="outline">
+        <mat-select  [disabled]="showProductId()" placeholder="выберите продукт">
+          @for (product of products(); track product) {
+            <mat-option [value]="product.id">{{ product }}</mat-option>
+          }
+        </mat-select>
+
+      </mat-form-field>
+    </div>
+  </form>
+</div>

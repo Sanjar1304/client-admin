@@ -1,0 +1,95 @@
+<div class="bg-white rounded p-6 shadow-lg">
+
+  <!-- Заголовок: "Добавить новую тему" -->
+  <h2 class="text-2xl font-semibold mb-4">Добавить новую тему</h2>
+
+  <form [formGroup]="createTopicForm" (ngSubmit)="onSubmit()" class="flex flex-col ">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+      <div [formGroup]="getFormGroupAt(0)">
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>Название (UZB)</mat-label>
+          <input
+            matInput
+            formControlName="text"
+            placeholder="Введите название на узбекском"
+          />
+          <mat-error *ngIf="nameTextArray.at(0).get('text')?.invalid">Поле обязательно</mat-error>
+        </mat-form-field>
+      </div>
+
+      <div [formGroup]="getFormGroupAt(1)">
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>Название (RUS)</mat-label>
+          <input
+            matInput
+            formControlName="text"
+            placeholder="Введите название на русском"
+          />
+          <mat-error *ngIf="nameTextArray.at(1).get('text')?.invalid">Поле обязательно</mat-error>
+        </mat-form-field>
+      </div>
+
+      <div [formGroup]="getFormGroupAt(2)">
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>Название (ENG)</mat-label>
+          <input
+            matInput
+            formControlName="text"
+            placeholder="Введите название на английском"
+          />
+          <mat-error *ngIf="nameTextArray.at(2).get('text')?.invalid">Поле обязательно</mat-error>
+        </mat-form-field>
+      </div>
+
+    </div>
+
+    <div class="text-end">
+      <button
+        [disabled]="createTopicForm.invalid"
+        type="submit"
+        [ngClass]="createTopicForm.valid? 'bg-blue-500 hover:bg-blue-600 text-white':'bg-gray-500 text-gray-200 cursor-not-allowed'"
+        class=" px-6 py-2 rounded-lg">
+        Добавить
+      </button>
+    </div>
+  </form>
+
+  <hr class="my-8 border-t-2 border-gray-200" />
+
+
+  <h2 class="text-2xl font-semibold mb-4">Список тем</h2>
+  <mat-chip-set class="mt-2 flex flex-wrap gap-2">
+    <ng-container *ngIf="loading(); else chipList">
+      <div class="animate-pulse flex gap-x-2">
+        <div class="bg-gray-300 h-6 w-32  rounded-full"></div>
+        <div class="bg-gray-300 h-6 w-24  rounded-full"></div>
+        <div class="bg-gray-300 h-6 w-28  rounded-full"></div>
+      </div>
+    </ng-container>
+    <ng-template #chipList>
+    <ng-container *ngIf="topics().length > 0; else empty">
+      <mat-chip
+        *ngFor="let topic of topics()"
+        [removable]="true"
+        (removed)="removeTopic(topic.id)"
+      >
+        {{ topic.name }}
+        <mat-icon matChipRemove>cancel</mat-icon>
+      </mat-chip>
+    </ng-container>
+    </ng-template>
+    <ng-template #empty>
+      <div class="flex flex-col items-center justify-center w-full">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mb-2 text-gray-400" fill="none" viewBox="0 0 24 24"
+             stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M9 17v2a2 2 0 002 2h2a2 2 0 002-2v-2m-6 0h6m-8-4h10l1-9H5l1 9z"/>
+        </svg>
+        <span>Пусто</span>
+      </div>
+    </ng-template>
+  </mat-chip-set>
+
+
+</div>

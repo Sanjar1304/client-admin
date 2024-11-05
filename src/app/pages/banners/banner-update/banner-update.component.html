@@ -1,0 +1,147 @@
+<div class="bg-white px-4 py-4 h-full rounded">
+
+  <form [formGroup]="bannerEditForm" (ngSubmit)="onSubmit()">
+    <div class="flex gap-x-1 mb-2">
+       <span matTooltip="Назад" matTooltipPosition="above" routerLink="/banners" mat-ripple
+             class="text-white bg-blue-500 rounded-full px-1 py-2 flex items-center h-full cursor-pointer ">
+         <mat-icon class="ms-2">arrow_back_ios</mat-icon>
+       </span>
+
+      <button type="submit" class="rounded-full  px-8" [disabled]="bannerEditForm.invalid"
+              [ngClass]="{'bg-blue-500 text-white':bannerEditForm.valid, 'bg-blue-600 text-gray-300 cursor-not-allowed':bannerEditForm.invalid}">
+        Сохранить
+      </button>
+<!--      <span matTooltip="Обновить" matTooltipPosition="above" (click)="refreshForm()" mat-ripple-->
+<!--            class="text-white bg-blue-500 rounded-full px-2 py-2 flex items-center h-full cursor-pointer">-->
+<!--         <mat-icon>refresh</mat-icon>-->
+<!--       </span>-->
+    </div>
+    <div class="flex justify-between items-center space-x-4 w-full">
+
+      <div class="flex-1">
+        <mat-form-field appearance="outline" class="w-full ">
+          <mat-label>URL перенаправления</mat-label>
+          <input matInput type="url" formControlName="redirectUrl"/>
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="w-full rounded-lg">
+          <mat-label>Тип баннера продукта</mat-label>
+          <mat-select formControlName="bannerProductType">
+            <mat-option *ngFor="let type of bannerTypeList()" [value]="type">{{ type }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div class="flex-1 justify-center flex">
+        <app-image-upload
+          (imageUploaded)="handleImageUpload($event)"
+          [initialImageUrl]="imageUrl()"
+        />
+      </div>
+    </div>
+    <div class="flex items-stretch gap-x-2">
+      <mat-tab-group class="w-full">
+        <mat-tab formArrayName="title" *ngFor="let group of titleTextArray.controls; let i = index"
+                 [label]="(group)?.get('lang')?.value">
+          <div class="mt-4" [formGroupName]="i">
+            <mat-form-field appearance="outline" class="w-full">
+              <mat-label>Название ({{ (group)?.get('lang')?.value }})</mat-label>
+              <input
+                matInput
+                [formControlName]="'text'"
+                [placeholder]="'Введите название на ' + (group)?.get('lang')?.value"
+              />
+              <mat-error *ngIf="(group)?.get('text')?.invalid">
+                Поле обязательно
+              </mat-error>
+            </mat-form-field>
+          </div>
+        </mat-tab>
+      </mat-tab-group>
+      <hr class="border-gray-200 mx-4 border h-auto">
+      <mat-tab-group class="w-full">
+        <mat-tab formArrayName="btnText" *ngFor="let group of btnTextArray.controls; let i = index"
+                 [label]="(group)?.get('lang')?.value">
+          <div class="mt-4" [formGroupName]="i">
+            <mat-form-field appearance="outline" class="w-full">
+              <mat-label>Текст кнопки ({{ (group)?.get('lang')?.value }})</mat-label>
+              <input
+                matInput
+                [formControlName]="'text'"
+                [placeholder]="'Введите текст кнопки на ' + (group)?.get('lang')?.value"
+              />
+              <mat-error *ngIf="(group)?.get('text')?.invalid">
+                Поле обязательно
+              </mat-error>
+            </mat-form-field>
+          </div>
+        </mat-tab>
+      </mat-tab-group>
+    </div>
+    <mat-tab-group class="w-full mt-4 mb-2">
+      <mat-tab formArrayName="description" *ngFor="let group of descriptionTextArray.controls; let i = index"
+               [label]="(group)?.get('lang')?.value">
+        <div class="mt-4" [formGroupName]="i">
+          <mat-form-field appearance="outline" class="w-full">
+            <mat-label>Описание ({{ (group)?.get('lang')?.value }})</mat-label>
+            <textarea
+              matInput
+              [formControlName]="'text'"
+              [placeholder]="'Введите описание на ' + (group)?.get('lang')?.value"
+            >
+            </textarea>
+            <mat-error *ngIf="(group)?.get('text')?.invalid">
+              Поле обязательно
+            </mat-error>
+          </mat-form-field>
+        </div>
+      </mat-tab>
+    </mat-tab-group>
+
+    <mat-form-field appearance="outline" class="w-full rounded-lg">
+      <mat-label>Цвет текста</mat-label>
+      <input matInput type="color" formControlName="textColour"/>
+    </mat-form-field>
+
+    <div formArrayName="backgroundColors" class="my-4">
+      <div *ngFor="let color of backgroundColors.controls; let i = index" class="flex items-center gap-4">
+        <mat-form-field appearance="outline" class="w-full rounded-lg">
+          <mat-label>Выберите цвет</mat-label>
+          <input matInput type="color" [formControlName]="i"/>
+        </mat-form-field>
+        <button type="button" *ngIf="i>0" mat-icon-button color="warn" (click)="removeColor('backgroundColors', i)">
+          <app-ui-svg-icon path="./assets/icons/btn-icons.svg#trash" svgClass="w-6 h-6"></app-ui-svg-icon>
+        </button>
+      </div>
+      <button  type="button" mat-raised-button color="primary" (click)="addColor('backgroundColors')" class="mt-2">Добавить цвет
+      </button>
+    </div>
+
+    <div formArrayName="btnColors" class="my-4">
+      <div *ngFor="let color of btnColors.controls; let i = index" class="flex items-center gap-4">
+        <mat-form-field appearance="outline" class="w-full rounded-lg">
+          <mat-label>Выберите цвет кнопки</mat-label>
+          <input matInput type="color" [formControlName]="i"/>
+        </mat-form-field>
+        <button type="button" *ngIf="i>0" mat-icon-button color="warn" (click)="removeColor('btnColors', i)">
+          <app-ui-svg-icon path="./assets/icons/btn-icons.svg#trash" svgClass="w-6 h-6"></app-ui-svg-icon>
+        </button>
+      </div>
+      <button type="button" mat-raised-button color="primary" (click)="addColor('btnColors')" class="mt-2">Добавить цвет</button>
+    </div>
+
+    <div formArrayName="indicatorBorderColors" class="my-4">
+      <div *ngFor="let color of indicatorBorderColors.controls; let i = index" class="flex items-center gap-4">
+        <mat-form-field appearance="outline" class="w-full rounded-lg">
+          <mat-label>Выберите цвет границы индикатора</mat-label>
+          <input matInput type="color" [formControlName]="i"/>
+        </mat-form-field>
+        <button type="button" *ngIf="i>0" mat-button color="warn" (click)="removeColor('indicatorBorderColors', i)">
+          <app-ui-svg-icon path="./assets/icons/btn-icons.svg#trash" svgClass="w-6 h-6"></app-ui-svg-icon>
+        </button>
+      </div>
+      <button type="button" mat-raised-button color="primary" (click)="addColor('indicatorBorderColors')" class="mt-2">Добавить цвет
+      </button>
+    </div>
+
+
+  </form>
+</div>

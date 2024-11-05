@@ -1,0 +1,52 @@
+<div>
+  <div class="py-3 text-end">
+    <button routerLink="/faq/create" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600">
+      Добавить
+    </button>
+  </div>
+  <div class="space-y-6">
+    <div *ngFor="let item of faqs()"
+         class="bg-gradient-to-r from-blue-100 to-blue-50 p-5 rounded-lg shadow-md hover:drop-shadow transition-shadow duration-300 relative">
+      <div class="flex justify-between items-center">
+        <div>
+          <div class="flex items-center mb-3">
+            <mat-icon class="text-blue-600  mr-2">help_outline</mat-icon>
+            <span class="text-lg m-0 p-0 font-semibold text-blue-800">{{ item.question }}</span>
+          </div>
+          <div class="flex items-start">
+            <mat-icon class="text-green-600 text-lg mr-2">comment</mat-icon>
+            <p class="text-gray-700 italic">{{ item.answer }}</p>
+          </div>
+        </div>
+        <div class="flex items-center justify-center">
+          <app-ui-svg-icon
+            mat-button
+            [matMenuTriggerFor]="menu"
+            class="w-11 h-11 flex items-center justify-center text-center cursor-pointer"
+            path="./assets/icons/btn-icons.svg#setting-2"
+            svgClass="w-6 h-6">
+          </app-ui-svg-icon>
+
+          <mat-menu #menu="matMenu" xPosition="before" class="menu-actions">
+            <div routerLink="/faq/update" [queryParams]="{id:item.id}" mat-ripple
+                 class="flex items-center gap-x-2 py-3 px-3 cursor-pointer">
+              <app-ui-svg-icon
+                path="./assets/icons/btn-icons.svg#edit"
+                svgClass="w-6 h-6">
+              </app-ui-svg-icon>
+              <div class="text-xs leading-normal text-secondary">Редактировать</div>
+            </div>
+            <div (click)="openFaqDeleteDialog(item.id)" mat-ripple
+                 class="flex items-center gap-x-2 py-3 px-3 cursor-pointer">
+              <app-ui-svg-icon
+                path="./assets/icons/btn-icons.svg#trash"
+                svgClass="w-6 h-6">
+              </app-ui-svg-icon>
+              <div class="text-xs leading-normal text-secondary">Удалить</div>
+            </div>
+          </mat-menu>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

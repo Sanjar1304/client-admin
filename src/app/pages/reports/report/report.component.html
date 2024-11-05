@@ -1,0 +1,114 @@
+<div>
+  <div class="py-3 text-end">
+    <button routerLink="/reports/create" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600">
+      Добавить
+    </button>
+  </div>
+  <div class="p-4">
+    <ng-container *ngIf="loading(); else reportList">
+      <div class="animate-pulse space-y-4">
+        <div class="bg-gray-300 h-6 w-3/4 rounded"></div>
+        <div class="bg-gray-300 h-4 w-1/2 rounded"></div>
+        <div class="bg-gray-300 h-20 w-full rounded"></div>
+      </div>
+    </ng-container>
+
+    <ng-template #reportList>
+      <ng-container *ngIf="reports().length > 0; else emptyState">
+        <div *ngFor="let report of reports()" class="relative bg-white rounded-lg p-4 w-full mb-4 ">
+          <div class="flex justify-between">
+            <div>
+              <h2 class="text-lg font-bold">{{ report.title }}</h2>
+              <p class="text-gray-600">{{ report.description }}</p>
+
+              <div class="mt-2">
+                <mat-chip-set>
+                  <mat-chip>{{ report.topic.name }}</mat-chip>
+                </mat-chip-set>
+              </div>
+            </div>
+            <app-ui-svg-icon
+              mat-button
+              [matMenuTriggerFor]="menu"
+              class="w-11 h-11 flex items-center justify-center text-center cursor-pointer"
+              path="./assets/icons/btn-icons.svg#setting-2"
+              svgClass="w-8 h-8"
+            ></app-ui-svg-icon>
+          </div>
+
+          <mat-accordion>
+            <mat-expansion-panel
+              *ngFor="let section of report.sections; let i = index"
+              [expanded]="expandedSectionIndex() === i"
+              (opened)="toggleSection(i)"
+              (closed)="toggleSection(null)"
+            >
+              <mat-expansion-panel-header>
+                <mat-panel-title>
+                  {{ section.title }}
+                </mat-panel-title>
+              </mat-expansion-panel-header>
+              <div class="flex flex-col md:flex-row gap-4 p-4">
+                <ng-container *ngIf="section.imageUrls.length">
+                  <ng-container *ngFor="let url of section.imageUrls">
+                    <img *ngIf="url" [src]="url" class="w-full md:w-64 h-auto rounded" alt="">
+                  </ng-container>
+                </ng-container>
+                <p class="text-gray-700">{{ section.content }}</p>
+              </div>
+              <div class="flex justify-end gap-4 p-4 pt-2 border-t border-gray-200">
+                <button
+                  routerLink="/reports/edit/section"
+                  [queryParams]="{ id: section.id,reportId:report.id }"
+                  mat-button color="primary"
+                >
+
+                  <mat-icon>edit</mat-icon>
+                  <span>Редактировать</span>
+                </button>
+                <button (click)="openReportDeleteDialog(section.id,'section')" mat-button color="warn">
+                  <mat-icon>delete</mat-icon>
+                  <span>Удалить</span>
+                </button>
+              </div>
+            </mat-expansion-panel>
+          </mat-accordion>
+
+          <mat-menu #menu="matMenu" xPosition="before" class="menu-actions">
+            <div
+              routerLink="/reports/add/section"
+              [queryParams]="{ id: report.id }"
+              mat-ripple
+              class="flex items-center gap-x-2 py-3 px-3 cursor-pointer"
+            >
+              <mat-icon>add</mat-icon>
+              <span class="text-xs text-secondary">Добавить секцию</span>
+            </div>
+            <div
+              (click)="openReportDeleteDialog(report.id,'report')"
+              mat-ripple
+              class="flex items-center gap-x-2 py-3 px-3 cursor-pointer"
+            >
+              <app-ui-svg-icon
+                path="./assets/icons/btn-icons.svg#trash"
+                svgClass="w-6 h-6"
+              ></app-ui-svg-icon>
+              <span class="text-xs text-secondary">Удалить</span>
+            </div>
+          </mat-menu>
+        </div>
+      </ng-container>
+
+      <ng-template #emptyState>
+        <div class="flex flex-col items-center justify-center w-full">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mb-2 text-gray-400" fill="none" viewBox="0 0 24 24"
+               stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M9 17v2a2 2 0 002 2h2a2 2 0 002-2v-2m-6 0h6m-8-4h10l1-9H5l1 9z"/>
+          </svg>
+          <span>Пусто</span>
+        </div>
+      </ng-template>
+    </ng-template>
+  </div>
+</div>

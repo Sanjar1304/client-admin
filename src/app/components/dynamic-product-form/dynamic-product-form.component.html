@@ -1,0 +1,218 @@
+<div class="bg-white px-4 py-4  rounded">
+  <form [formGroup]="dynamicProductForm" (ngSubmit)="submitForm()">
+    <div class="flex gap-x-1 mb-2">
+       <span matTooltip="Назад" matTooltipPosition="above" routerLink="/loans" mat-ripple
+             class="text-white bg-blue-500 rounded-full px-1 py-2 flex items-center h-full cursor-pointer ">
+         <mat-icon class="ms-2">arrow_back_ios</mat-icon>
+       </span>
+
+      <button type="submit" class="rounded-full  px-8" [disabled]="dynamicProductForm.invalid"
+              [ngClass]="{'bg-blue-500 text-white':dynamicProductForm.valid, 'bg-blue-600 text-gray-300 cursor-not-allowed':dynamicProductForm.invalid}">
+        Сохранить
+      </button>
+      <!--      <span matTooltip="Обновить" matTooltipPosition="above" (click)="refreshForm()" mat-ripple-->
+      <!--            class="text-white bg-blue-500 rounded-full px-2 py-2 flex items-center h-full cursor-pointer">-->
+      <!--         <mat-icon>refresh</mat-icon>-->
+      <!--       </span>-->
+
+    </div>
+    <div class="flex justify-between gap-x-4">
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>Баннеры</mat-label>
+        <mat-select formControlName="bannerId" placeholder="выберите баннер">
+          <mat-option [value]="banner.id" *ngFor="let banner of banners()">
+            <div class="flex justify-between items-center w-full p-2">
+              <div class="flex-shrink-0">
+                <img
+                  [ngSrc]="banner.imageUrl"
+                  height="48"
+                  width="48"
+                  class="rounded-md border border-gray-300"
+                  alt="{{ banner.title }}"
+                />
+              </div>
+              <span class="ml-4 text-base font-medium">{{ banner.title }}</span>
+            </div>
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>Валюта</mat-label>
+        <mat-select formControlName="currency" placeholder="выберите валюту">
+          <mat-option *ngFor="let currency of ['UZS','USD','RUB','EUR','KZT','GBP','AED','JPY','CHF','CNY']"
+                      [value]="currency">{{ currency }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+    </div>
+    <div class="flex justify-between gap-x-4">
+      <mat-form-field class="w-full" appearance="outline">
+        <mat-label>Тип пользователя</mat-label>
+        <mat-select formControlName="productUserType">
+          <mat-option *ngFor="let type of ['ALL','PHYSICAL','JURIDICAL']" [value]="type">{{ type }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field class="w-full" appearance="outline">
+        <mat-label>Тип</mat-label>
+        <mat-select placeholder="выберите тип" formControlName="type">
+          <mat-option *ngFor="let type of productTypes()" [value]="type">{{ type }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div class="flex items-stretch gap-x-2">
+      <mat-tab-group class="w-full">
+        <mat-tab formArrayName="name" *ngFor="let group of nameTextArray().controls; let i = index"
+                 [label]="(group)?.get('lang')?.value">
+          <div class="mt-4" [formGroupName]="i">
+            <mat-form-field appearance="outline" class="w-full">
+              <mat-label>Название ({{ (group)?.get('lang')?.value }})</mat-label>
+              <input
+                matInput
+                [formControlName]="'text'"
+                [placeholder]="'Введите название на ' + (group)?.get('lang')?.value"
+              />
+              <mat-error *ngIf="(group)?.get('text')?.invalid">
+                Поле обязательно
+              </mat-error>
+            </mat-form-field>
+          </div>
+        </mat-tab>
+      </mat-tab-group>
+      <hr class="border-gray-200 mx-4 border h-auto">
+      <mat-tab-group class="w-full">
+        <mat-tab formArrayName="advantagesTitle" *ngFor="let group of advantagesTitleArray().controls; let i = index"
+                 [label]="(group)?.get('lang')?.value">
+          <div class="mt-4" [formGroupName]="i">
+            <mat-form-field appearance="outline" class="w-full">
+              <mat-label>Название преимущества ({{ (group)?.get('lang')?.value }})</mat-label>
+              <input
+                matInput
+                [formControlName]="'text'"
+                [placeholder]="'Введите название преимущества' + (group)?.get('lang')?.value"
+              />
+              <mat-error *ngIf="(group)?.get('text')?.invalid">
+                Поле обязательно
+              </mat-error>
+            </mat-form-field>
+          </div>
+        </mat-tab>
+      </mat-tab-group>
+    </div>
+    <mat-tab-group class="w-full">
+      <mat-tab formArrayName="productInfoTitle" *ngFor="let group of productInfoTitleArray().controls; let i = index"
+               [label]="(group)?.get('lang')?.value">
+        <div class="mt-4" [formGroupName]="i">
+          <mat-form-field appearance="outline" class="w-full">
+            <mat-label>Название информации о продукте ({{ (group)?.get('lang')?.value }})</mat-label>
+            <input
+              matInput
+              [formControlName]="'text'"
+              [placeholder]="'Введите название информации о продукте' + (group)?.get('lang')?.value"
+            />
+            <mat-error *ngIf="(group)?.get('text')?.invalid">
+              Поле обязательно
+            </mat-error>
+          </mat-form-field>
+        </div>
+      </mat-tab>
+    </mat-tab-group>
+    <h2>Информация о продукте</h2>
+    <mat-tab-group>
+      <mat-tab label="UZB">
+
+        <div class="grid grid-cols-1 gap-4 mt-3">
+          <mat-form-field appearance="outline" class="w-full">
+            <mat-label>Заголовок (UZB)</mat-label>
+            <input matInput [formControl]="getTitleControl(0, 'title')"/>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="w-full">
+            <mat-label>Контент (UZB)</mat-label>
+            <textarea matInput [formControl]="getTitleControl(0, 'content')"></textarea>
+          </mat-form-field>
+        </div>
+
+      </mat-tab>
+
+      <mat-tab label="RUS">
+
+        <div class="grid grid-cols-1 gap-4 mt-3">
+          <mat-form-field appearance="outline" class="w-full">
+            <mat-label>Заголовок (RUS)</mat-label>
+            <input matInput [formControl]="getTitleControl(1, 'title')"/>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="w-full">
+            <mat-label>Контент (RUS)</mat-label>
+            <textarea matInput [formControl]="getTitleControl(1, 'content')"></textarea>
+          </mat-form-field>
+        </div>
+      </mat-tab>
+
+      <mat-tab label="ENG">
+
+        <div class="grid grid-cols-1 gap-4 mt-3">
+          <mat-form-field appearance="outline" class="w-full">
+            <mat-label>Заголовок (ENG)</mat-label>
+            <input matInput [formControl]="getTitleControl(2, 'title')"/>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="w-full">
+            <mat-label>Контент (ENG)</mat-label>
+            <textarea matInput [formControl]="getTitleControl(2, 'content')"></textarea>
+          </mat-form-field>
+        </div>
+      </mat-tab>
+    </mat-tab-group>
+    <h2>Информация о преимуществах продукта</h2>
+    <mat-tab-group>
+      <mat-tab label="UZB">
+
+        <div class="grid grid-cols-1 gap-4 mt-3">
+          <mat-form-field appearance="outline" class="w-full">
+            <mat-label>Заголовок (UZB)</mat-label>
+            <input matInput [formControl]="getAdvantagesControl(0, 'title')"/>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="w-full">
+            <mat-label>Контент (UZB)</mat-label>
+            <textarea matInput [formControl]="getAdvantagesControl(0, 'content')"></textarea>
+          </mat-form-field>
+        </div>
+
+      </mat-tab>
+
+      <mat-tab label="RUS">
+        <div class="grid grid-cols-1 gap-4 mt-3">
+          <mat-form-field appearance="outline" class="w-full">
+            <mat-label>Заголовок (RUS)</mat-label>
+            <input matInput [formControl]="getAdvantagesControl(1, 'title')"/>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="w-full">
+            <mat-label>Контент (RUS)</mat-label>
+            <textarea matInput [formControl]="getAdvantagesControl(1, 'content')"></textarea>
+          </mat-form-field>
+        </div>
+      </mat-tab>
+
+      <mat-tab label="ENG">
+        <div class="grid grid-cols-1 gap-4 mt-3">
+          <mat-form-field appearance="outline" class="w-full">
+            <mat-label>Title (ENG)</mat-label>
+            <input matInput [formControl]="getAdvantagesControl(2, 'title')"/>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="w-full">
+            <mat-label>Контент (ENG)</mat-label>
+            <textarea matInput [formControl]="getAdvantagesControl(2, 'content')"></textarea>
+          </mat-form-field>
+        </div>
+      </mat-tab>
+    </mat-tab-group>
+    <app-image-upload (imageUploaded)="handleImageUpload($event)"></app-image-upload>
+
+  </form>
+</div>

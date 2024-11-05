@@ -1,0 +1,91 @@
+<div>
+  <div class="py-3 text-end">
+    <button routerLink="/banners/create" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600">
+      Добавить
+    </button>
+  </div>
+  <table class="min-w-full bg-white shadow-md rounded-lg overflow-hidden">
+    <thead class="text-white">
+    <tr class="bg-[rgb(31,41,55)]">
+      <th class="py-3 px-6 text-left">Изображение</th>
+      <th class="py-3 px-6 text-left">Заголовок</th>
+      <th class="py-3 px-6 text-left">Описание</th>
+      <th class="py-3 px-6 text-left">Ссылка для перехода</th>
+      <th class="py-3 px-6">Действие</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngIf="loading">
+      <td colspan="5" class="py-3 px-6">
+        <div class="animate-pulse">
+          <div class="space-y-3">
+            <div *ngFor="let skeleton of [].constructor(10); let i = index"
+                 class="flex-1 h-7 bg-gray-300 rounded"></div>
+          </div>
+        </div>
+      </td>
+    </tr>
+    <tr *ngIf="!loading && !banners().length" class="border-b">
+      <td colspan="4" class="py-4 text-center text-gray-500">
+        <div class="flex flex-col items-center">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mb-2 text-gray-400" fill="none" viewBox="0 0 24 24"
+               stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M9 17v2a2 2 0 002 2h2a2 2 0 002-2v-2m-6 0h6m-8-4h10l1-9H5l1 9z"/>
+          </svg>
+          <span>Пусто</span>
+        </div>
+      </td>
+    </tr>
+    <tr
+      *ngFor="let banner of banners(); let i = index"
+      [ngClass]="i % 2 === 1 ? 'bg-gray-200' : 'bg-white'"
+      class="border-b">
+      <td class="py-3 px-6">
+        <img height="20" width="64" ngSrc="{{banner.imageUrl}}" priority alt=""/></td>
+      <td class="py-3 px-6">{{ banner.title }}</td>
+      <td class="py-3 px-6">{{ banner.description }}</td>
+      <td class="py-3 px-6">{{ banner.redirectUrl }}</td>
+      <td class="align-middle">
+        <div class="flex items-center justify-center">
+          <app-ui-svg-icon
+            mat-button
+            [matMenuTriggerFor]="menu"
+            class="w-11 h-11 flex items-center justify-center text-center cursor-pointer"
+            path="./assets/icons/btn-icons.svg#setting-2"
+            svgClass="w-6 h-6">
+          </app-ui-svg-icon>
+
+          <mat-menu #menu="matMenu" xPosition="before" class="menu-actions">
+            <div routerLink="/banners/update" [queryParams]="{id:banner.id}" mat-ripple
+                 class="flex items-center gap-x-2 py-3 px-3 cursor-pointer">
+              <app-ui-svg-icon
+                path="./assets/icons/btn-icons.svg#edit"
+                svgClass="w-6 h-6">
+              </app-ui-svg-icon>
+              <div class="text-xs leading-normal text-secondary">Редактировать</div>
+            </div>
+            <div (click)="openBannerDeleteDialog(banner.id)" mat-ripple
+                 class="flex items-center gap-x-2 py-3 px-3 cursor-pointer">
+              <app-ui-svg-icon
+                path="./assets/icons/btn-icons.svg#trash"
+                svgClass="w-6 h-6">
+              </app-ui-svg-icon>
+              <div class="text-xs leading-normal text-secondary">Удалить</div>
+            </div>
+          </mat-menu>
+        </div>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+  <app-pagination
+    class="justify-end flex"
+    [totalItems]="totalItems()"
+    [itemsPerPage]="10"
+    [currentPage]="page()"
+    (pageChange)="onPageChange($event)">
+  </app-pagination>
+
+
+</div>
